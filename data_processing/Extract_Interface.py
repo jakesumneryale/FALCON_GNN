@@ -107,7 +107,7 @@ def Extract_Interface(pdb_path):
     #write that into our path
     rpath=Write_Interface(final_receptor,pdb_path,".rinterface")
     lpath=Write_Interface(final_ligand, pdb_path, ".linterface")
-    print(rpath,lpath)
+    #print(rpath,lpath)
     return rpath,lpath
 
 

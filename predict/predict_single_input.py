@@ -48,7 +48,7 @@ def init_model(model_path,params):
     print('    Total params: %.10fM' % (count_parameters(model) / 1000000.0))
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = initialize_model(model, device)
-    state_dict = torch.load(model_path)
+    state_dict = torch.load(model_path, map_location = device)
     model.load_state_dict(state_dict['state_dict'])
     model.eval()
     return model,device
