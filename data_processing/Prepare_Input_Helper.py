@@ -13,6 +13,7 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 from bio_embeddings.embed import SeqVecEmbedder
+import torch
 
 
 
@@ -88,19 +89,23 @@ def get_seqvec_features_for_protein(protein_sequence):
 
 	embedder = SeqVecEmbedder()
 
-	embedding = embedder.embed("SEQVENCE")
+	embedding = embedder.embed(list(protein_sequence))
+
+	embedding = torch.tensor(embedding).sum(dim=0) # Tensor with shape [L,1024]
 
 	return embedding 
 
 def main():
-	test_file = "/Users/jakesumner/Documents/GitHub/GNN_DOVE/example/input/correct.pdb"
+	#test_file = "/Users/jakesumner/Documents/GitHub/GNN_DOVE/example/input/correct.pdb"
+	test_file = "/mnt/c/Users/jaket/Documents/GitHub/GNN_DOVE/example/input/correct.pdb"
 
 	## Test get_c_alpha_coords
 
 	temp_seq, temp_coords = get_c_alpha_coords(test_file)
 	temp_adj = create_adjacency_matrix(len(temp_seq))
 	temp_emb = get_seqvec_features_for_protein(temp_seq)
-	potato = 1
+	print(len(temp_seq))
+	print(temp_emb.shape)
 
 
 if __name__ == '__main__':
