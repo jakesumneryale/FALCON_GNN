@@ -1,5 +1,5 @@
 import os
-from data_processing.Extract_Interface import Extract_Interface
+from data_processing.Extract_Monomers import Extract_Monomers
 from rdkit.Chem.rdmolfiles import MolFromPDBFile
 from data_processing.Feature_Processing import get_atom_feature
 import numpy as np
@@ -8,14 +8,16 @@ from scipy.spatial import distance_matrix
 import data_processing.Prepare_Input_Helper  
 
 
-def Prepare_Input(structure_path):
+def Prepare_Input(structure_path, receptor_units):
     # extract the interface region
     root_path=os.path.split(structure_path)[0]
-    receptor_path, ligand_path = Extract_Interface(structure_path)
+    receptor_path, ligand_path = Extract_Monomers(structure_path, receptor_units)
     receptor_mol = MolFromPDBFile(receptor_path, sanitize=False)
     ligand_mol = MolFromPDBFile(ligand_path, sanitize=False)
     receptor_count = receptor_mol.GetNumAtoms()
     ligand_count = ligand_mol.GetNumAtoms()
+
+    ## Change the features to be SeqVec in the morning!
     receptor_feature = get_atom_feature(receptor_mol, is_ligand=False)
     ligand_feature = get_atom_feature(ligand_mol, is_ligand=True)
 

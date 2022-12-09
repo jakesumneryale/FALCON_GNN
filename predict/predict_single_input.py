@@ -35,7 +35,7 @@ import os
 from ops.os_operation import mkdir
 import shutil
 import  numpy as np
-from data_processing.Prepare_Input import Prepare_Input
+from data_processing.Prepare_Input_Jake import Prepare_Input
 from model.GNN_Model import GNN_Model
 import torch
 from ops.train_utils import count_parameters,initialize_model
@@ -82,7 +82,7 @@ def predict_single_input(input_path,params):
 
     structure_path=os.path.join(save_path,"Input.pdb")
     shutil.copy(input_path,structure_path)
-    input_file=Prepare_Input(structure_path)
+    input_file=Prepare_Input(structure_path, int(params['receptor_units']))
     fold_choice = params['fold']
     #loading the model
     if fold_choice != -1:

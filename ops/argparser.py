@@ -51,6 +51,7 @@ def argparser():
     parser.add_argument("--dropout_rate", help="dropout_rate", type=float, default=0.3)
     parser.add_argument('--seed',type=int,default=888,help='random seed for shuffling')
     parser.add_argument('--fold',required=True,help='specify fold model for prediction',type=int,default=-1)
+    parser.add_argument('--receptor_units', default = 1, help="The number of subunits from the PDB that make up the receptor")
     args = parser.parse_args()
     params = vars(args)
     return params

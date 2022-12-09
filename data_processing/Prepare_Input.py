@@ -34,6 +34,7 @@
 
 import os
 from data_processing.Extract_Interface import Extract_Interface
+from data_processing.Extract_Monomers import Extract_Monomers
 from rdkit.Chem.rdmolfiles import MolFromPDBFile
 from data_processing.Feature_Processing import get_atom_feature
 import numpy as np
