@@ -68,6 +68,7 @@ def collate_fn_Jake(batch):
     A1 = np.zeros((len(batch), max_natoms, max_natoms))
     A2 = np.zeros((len(batch), max_natoms, max_natoms))
     V = np.zeros((len(batch), max_natoms))
+    Y = np.zeros((len(batch)))
     #keys = []
     Atoms_Number=[]
     for i in range(len(batch)):
@@ -77,12 +78,14 @@ def collate_fn_Jake(batch):
         A1[i, :natom, :natom] = batch[i]['A1']
         A2[i, :natom, :natom] = batch[i]['A2']
         V[i, :natom] = batch[i]['V']
+        Y[i]  = batch[i]['Y']
         #keys.append(batch[i]['key'])
         Atoms_Number.append(natom)
     H = torch.from_numpy(H).float()
     A1 = torch.from_numpy(A1).float()
     A2 = torch.from_numpy(A2).float()
     V = torch.from_numpy(V).float()
+    Y = torch.from_numpy(Y).float()
     Atoms_Number=torch.Tensor(Atoms_Number)
 
-    return H, A1, A2, V,Atoms_Number #, keys
+    return H, A1, A2, V, Y, Atoms_Number #, keys

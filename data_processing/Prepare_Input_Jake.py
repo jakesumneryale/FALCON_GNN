@@ -56,7 +56,16 @@ def Prepare_Input(structure_path, receptor_units, capri_rank = None):
     # node indice for aggregation
     valid = np.zeros((receptor_count + ligand_count,))
     valid[:receptor_count] = 1
-    input_file=os.path.join(root_path,"Input.npz")
+
+    ## TO DO ##
+    ## Add logic to the input file so that each input file is named with the following method
+    ## <target_ID_decoy_ID.npz>. Create a list of the file path locations
+
+    dataset_path = r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/dockground_1_processed_npz"
+    temp_struc = structure_path.split("/")
+    pdb_name, decoy_name =temp_struc[-3].split("_")[0], temp_struc[-1].split(".")[0]
+    temp_save_file = f"{pdb_name}_{decoy_name}.npz"
+    input_file=os.path.join(dataset_path, temp_save_file)
     # sample = {
     #     'H': H.tolist(),
     #     'A1': agg_adj1.tolist(),
@@ -67,5 +76,10 @@ def Prepare_Input(structure_path, receptor_units, capri_rank = None):
     if capri_rank == None:
         np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid)
     else: 
-        np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid)
+        np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid, Y=capri_rank)
+
+    ## Remove interface files
+    os.remove(receptor_path)
+    os.remove(ligand_path)
+
     return input_file
