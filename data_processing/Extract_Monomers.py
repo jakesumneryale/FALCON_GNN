@@ -6,6 +6,11 @@ import os
 from ops.Timer_Control import set_timeout,after_timeout
 RESIDUE_Forbidden_SET={"FAD"}
 
+letter_transfer = {'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E', 'PHE': 'F',
+		'GLY': 'G', 'HIS': 'H', 'ILE': "I", 'LYS': "K", 'LEU': "L",
+	   'MET': "M", 'ASN': "N", 'PRO': "P", 'GLN': "Q", 'ARG': "R",
+	   'SER': "S", 'THR': "T", 'VAL': "V", 'TRP': "W", 'TYR': 'Y'}
+
 def Extract_Monomers(pdb_path, receptor_units):
     """
     specially for 2 docking models
@@ -14,10 +19,13 @@ def Extract_Monomers(pdb_path, receptor_units):
     :return:
     extract a receptor and ligand, meanwhile, write two files of the receptor interface part, ligand interface part
     """
+    global letter_transfer
     receptor_list=[]
     ligand_list=[]
     rlist=[]
     llist=[]
+    r_seq = []
+    l_seq = []
     count_r=0
     count_l=0
     with open(pdb_path,'r') as file:
@@ -56,6 +64,7 @@ def Extract_Monomers(pdb_path, receptor_units):
                     rlist.append(tmp_list)
                     tmp_list = []
                     tmp_list.append([x, y, z, atom_type, count_l])
+                    r_seq.append(letter_transfer[residue_type])
                     count_l += 1
                     receptor_list.append(line)
                 else:
@@ -63,6 +72,7 @@ def Extract_Monomers(pdb_path, receptor_units):
 	                    llist.append(tmp_list)
 	                    tmp_list = []
 	                    tmp_list.append([x, y, z, atom_type, count_l])
+	                    l_seq.append(letter_transfer[residue_type])
 	                    count_l += 1
 	                    ligand_list.append(line)
 
@@ -79,7 +89,7 @@ def Extract_Monomers(pdb_path, receptor_units):
     rpath=Write_Interface(receptor_list,pdb_path,".rinterface")
     lpath=Write_Interface(ligand_list, pdb_path, ".linterface")
     #print(rpath,lpath)
-    return rpath,lpath
+    return rpath,lpath,r_seq,l_seq
 
 
 @set_timeout(100000, after_timeout)

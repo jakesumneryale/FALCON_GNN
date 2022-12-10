@@ -5,21 +5,36 @@ from data_processing.Feature_Processing import get_atom_feature
 import numpy as np
 from rdkit.Chem.rdmolops import GetAdjacencyMatrix
 from scipy.spatial import distance_matrix
-import data_processing.Prepare_Input_Helper  
+import data_processing.Prepare_Input_Helper
+from bio_embeddings.embed import SeqVecEmbedder
+import torch
 
+
+def get_seqvec_features_for_protein(protein_sequence, embedder):
+    '''
+    Creates the SeqVec features for each of the 
+    amino acids in the protein sequence. The size of the
+    outputted vector will be (L, 1024), where L is the 
+    length of the protein.
+    '''
+
+    embedding = embedder.embed(protein_sequence)
+    embedding = torch.tensor(embedding).sum(dim=0) # Tensor with shape [L,1024]
+    return embedding
 
 def Prepare_Input(structure_path, receptor_units):
+    embedder = SeqVecEmbedder() 
     # extract the interface region
     root_path=os.path.split(structure_path)[0]
-    receptor_path, ligand_path = Extract_Monomers(structure_path, receptor_units)
+    receptor_path, ligand_path, receptor_seq, ligand_seq = Extract_Monomers(structure_path, receptor_units)
     receptor_mol = MolFromPDBFile(receptor_path, sanitize=False)
     ligand_mol = MolFromPDBFile(ligand_path, sanitize=False)
     receptor_count = receptor_mol.GetNumAtoms()
     ligand_count = ligand_mol.GetNumAtoms()
 
     ## Change the features to be SeqVec in the morning!
-    receptor_feature = get_atom_feature(receptor_mol, is_ligand=False)
-    ligand_feature = get_atom_feature(ligand_mol, is_ligand=True)
+    receptor_feature = get_seqvec_features_for_protein(receptor_seq, embedder)
+    ligand_feature = get_seqvec_features_for_protein(ligand_seq, embedder)
 
     # get receptor adj matrix
     c1 = receptor_mol.GetConformers()[0]

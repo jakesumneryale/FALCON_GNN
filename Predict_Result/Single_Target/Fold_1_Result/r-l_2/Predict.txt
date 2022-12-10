@@ -1,0 +1,2 @@
+Input	Score
+r-l_2.pdb	0.9969
