@@ -22,7 +22,7 @@ def get_seqvec_features_for_protein(protein_sequence, embedder):
     embedding = torch.tensor(embedding).sum(dim=0) # Tensor with shape [L,1024]
     return embedding
 
-def Prepare_Input(structure_path, receptor_units):
+def Prepare_Input(structure_path, receptor_units, capri_rank = None):
     embedder = SeqVecEmbedder() 
     # extract the interface region
     root_path=os.path.split(structure_path)[0]
@@ -64,5 +64,8 @@ def Prepare_Input(structure_path, receptor_units):
     #     'V': valid,
     #     'key': structure_path,
     # }
-    np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid)
+    if capri_rank == None:
+        np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid)
+    else: 
+        np.savez(input_file,  H=H, A1=agg_adj1, A2=agg_adj2, V=valid)
     return input_file

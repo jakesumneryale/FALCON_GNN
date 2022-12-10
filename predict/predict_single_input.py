@@ -40,6 +40,7 @@ from model.GNN_Model import GNN_Model
 import torch
 from ops.train_utils import count_parameters,initialize_model
 from data_processing.collate_fn import collate_fn
+from data_processing.collate_fn import collate_fn_Jake
 from data_processing.Single_Dataset import Single_Dataset
 from torch.utils.data import DataLoader
 
@@ -105,7 +106,7 @@ def predict_single_input(input_path,params):
     dataset = Single_Dataset(list_npz)
     dataloader = DataLoader(dataset, 1, shuffle=False,
                             num_workers=params['num_workers'],
-                            drop_last=False, collate_fn=collate_fn)
+                            drop_last=False, collate_fn=collate_fn_Jake)
 
     #prediction
     if fold_choice!=-1:
