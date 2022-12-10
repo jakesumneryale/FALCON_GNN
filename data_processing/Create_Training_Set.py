@@ -42,3 +42,10 @@ def parse_through_all_files(dirloc, rmsd_dict):
                 temp_decoy_dict[pdb_name] = [temp_reslist, np.array(temp_coordlist)]
             structure_master[master_pdb_id] = temp_decoy_dict
     return structure_master
+
+    '''
+	Make sure to make this program so that it can create the entire dataset along with labels that it stores
+	in the dataset - need to modify the collate_fn.py so that it can handle the label input as well.
+	Check the train function to see if there is anything vital there for guidance on how to include the
+	label.
+    '''
