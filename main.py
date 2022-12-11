@@ -58,5 +58,12 @@ if __name__ == "__main__":
         from predict.visualize_attention import visualize_attention
         visualize_attention(input_path, params)
 
+    ## Jake's Training Mode
+    elif params['mode']==3:
+        input_path = os.path.abspath(params['F'])  # one pdb file
+        os.environ['CUDA_VISIBLE_DEVICES'] = params['gpu']
+        from train.Train_FALCON_GNN import train_falcon_gnn
+        train_falcon_gnn(input_path, params)
+
 
 

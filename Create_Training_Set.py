@@ -23,6 +23,8 @@ def get_capri_rank(rmsds):
         capri_rank = 1
     return capri_rank
 
+pdb_only_list = ["2bnq", "2btf"]
+
 def parse_through_all_files(dirloc, rmsd_dict):
     '''
     Parses through all files in the directories for the
@@ -42,14 +44,20 @@ def parse_through_all_files(dirloc, rmsd_dict):
             temp_decoy_dict = {}
             master_pdb_id = decoy_pdbs[0][:4]
 
+            if master_pdb_id not in pdb_only_list:
+                ## Skips PDBs that have already been processed
+                continue
+
             ## Gets the length of the rec subunits from the file name
             rec_subunits = len(ele[0].split("/")[-2].split("_")[1])
             for decoy in decoy_pdbs[4:]:
                 if decoy.endswith(".pdb"):
-                    structure_path = os.path.join(ele[0], decoy)
-                    capri_rank = get_capri_rank(rmsd_dict[master_pdb_id][decoy.split(".")[0]])
-                    npz_filelist.append(Prepare_Input(structure_path, rec_subunits, capri_rank = capri_rank))
-                
+                    try:
+                        structure_path = os.path.join(ele[0], decoy)
+                        capri_rank = get_capri_rank(rmsd_dict[master_pdb_id][decoy.split(".")[0]])
+                        npz_filelist.append(Prepare_Input(structure_path, rec_subunits, capri_rank = capri_rank))
+                    except:
+                        print(f"FAILED ON MODEL {master_pdb_id} {decoy}")
     return npz_filelist
 
 '''
