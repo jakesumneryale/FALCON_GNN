@@ -62,7 +62,7 @@ class GNN_Model(nn.Module):
 
         self.mu = nn.Parameter(torch.Tensor([params['initial_mu']]).float())
         self.dev = nn.Parameter(torch.Tensor([params['initial_dev']]).float())
-        self.embede = nn.Linear(2 * N_atom_features, d_graph_layer, bias=False)
+        #self.embede = nn.Linear(2 * N_atom_features, d_graph_layer, bias=False)
         self.params=params
 
 
@@ -89,7 +89,7 @@ class GNN_Model(nn.Module):
         for batch_idx in range(len(c_adjs2)):
             num_atoms = int(atom_list[batch_idx])
             count_receptor = len(c_valid[batch_idx].nonzero())
-            c_adjs2[batch_idx,:count_receptor,count_receptor:num_atoms]=torch.where(c_adjs2[batch_idx,:count_receptor,count_receptor:num_atoms]<=10,study_distance[batch_idx,:count_receptor,count_receptor:num_atoms],filled_value[batch_idx,:count_receptor,count_receptor:num_atoms])
+            c_adjs2[batch_idx,:count_receptor,count_receptor:num_atoms]=torch.where(c_adjs2[batch_idx,:count_receptor,count_receptor:num_atoms]<=20,study_distance[batch_idx,:count_receptor,count_receptor:num_atoms],filled_value[batch_idx,:count_receptor,count_receptor:num_atoms])
             c_adjs2[batch_idx,count_receptor:num_atoms,:count_receptor]=c_adjs2[batch_idx,:count_receptor,count_receptor:num_atoms].t()
         return c_adjs2
 
@@ -128,7 +128,7 @@ class GNN_Model(nn.Module):
     def train_model(self,data,device):
         #get data
         c_hs, c_adjs1, c_adjs2, c_valid, num_atoms = data
-        c_hs = self.embede(c_hs)
+        #c_hs = self.embede(c_hs)
         c_adjs2=self.Formulate_Adj2(c_adjs2,c_valid,num_atoms,device)
         #then do the gate
         c_hs=self.embede_graph((c_hs,c_adjs1,c_adjs2))
@@ -141,7 +141,7 @@ class GNN_Model(nn.Module):
         return c_hs
     def test_model(self, data,device):
         c_hs, c_adjs1, c_adjs2, c_valid, num_atoms = data
-        c_hs = self.embede(c_hs)
+        #c_hs = self.embede(c_hs)
         c_adjs2 = self.Formulate_Adj2(c_adjs2, c_valid, num_atoms,device)
         # then do the gate
         c_hs = self.embede_graph((c_hs, c_adjs1, c_adjs2))
@@ -152,7 +152,7 @@ class GNN_Model(nn.Module):
         return c_hs
     def test_model_final(self,data,device):
         c_hs, c_adjs1, c_adjs2, c_valid, num_atoms = data
-        c_hs = self.embede(c_hs)
+        #c_hs = self.embede(c_hs)
         c_adjs2 = self.Formulate_Adj2(c_adjs2, c_valid, num_atoms, device)
         attention1, attention2 = self.get_attention_weight((c_hs, c_adjs1, c_adjs2))
         # then do the gate
@@ -164,7 +164,7 @@ class GNN_Model(nn.Module):
         return c_hs,attention1,attention2
     def eval_model_attention(self,data,device):
         c_hs, c_adjs1, c_adjs2, c_valid, num_atoms = data
-        c_hs = self.embede(c_hs)
+        #c_hs = self.embede(c_hs)
         c_adjs2 = self.Formulate_Adj2(c_adjs2, c_valid, num_atoms, device)
         attention1,attention2 = self.get_attention_weight((c_hs, c_adjs1, c_adjs2))
         return attention1,attention2
@@ -179,7 +179,7 @@ class GNN_Model(nn.Module):
             return c_hs
     def model_gnn_feature(self, data,device):
         c_hs, c_adjs1, c_adjs2, c_valid, num_atoms = data
-        c_hs = self.embede(c_hs)
+        #c_hs = self.embede(c_hs)
         c_adjs2 = self.Formulate_Adj2(c_adjs2, c_valid, num_atoms,device)
         # then do the gate
         c_hs = self.embede_graph((c_hs, c_adjs1, c_adjs2))

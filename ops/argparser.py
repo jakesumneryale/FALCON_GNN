@@ -43,7 +43,7 @@ def argparser():
     parser.add_argument("--batch_size", help="batch_size", type=int, default=32)
     parser.add_argument("--num_workers", help="number of workers", type=int, default=4)
     parser.add_argument("--n_graph_layer", help="number of GNN layer", type=int, default=4)
-    parser.add_argument("--d_graph_layer", help="dimension of GNN layer", type=int, default=140)
+    parser.add_argument("--d_graph_layer", help="dimension of GNN layer", type=int, default=1024)
     parser.add_argument("--n_FC_layer", help="number of FC layer", type=int, default=4)
     parser.add_argument("--d_FC_layer", help="dimension of FC layer", type=int, default=128)
     parser.add_argument("--initial_mu", help="initial value of mu", type=float, default=0.0)

@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     ## Jake's Training Mode
     elif params['mode']==3:
-        input_path = os.path.abspath(params['F'])  # one pdb file
+        input_path = params['F'] 
         os.environ['CUDA_VISIBLE_DEVICES'] = params['gpu']
         from train.Train_FALCON_GNN import train_falcon_gnn
         train_falcon_gnn(input_path, params)
