@@ -80,9 +80,22 @@ def train_falcon_gnn(input_path, params):
 	## Get all the NPZ files from the input_path
 
 	list_npz = [f for f in listdir(input_path) if isfile(join(input_path, f)) and f.endswith(".npz")]
+	fold1_label = ['1a2k', '1e96', '1he1', '1he8', '1wq1', '1f6m', '1ma9', '2btf', '1g20', '1ku6', '1t6g', '1ugh', '1yvb', '2ckh', '3pro']
+	fold2_label = ['1akj', '1p7q', '2bnq', '1dfj', '1nbf', '1r4m', '1xd3', '2bkr', '1gpw', '1hxy', '1u7f', '1uex', '1zy8', '2goo', '1ewy']
+	fold3_label = ['1avw', '1bth', '1bui', '1cho', '1ezu', '1ook', '1oph', '1ppf', '1tx6', '1xx9', '2fi4', '2kai', '1r0r', '2sni', '3sic']
+	fold4_label = ['1bvn', '1tmq', '1f51', '1fm9', '1a2y', '1g6v', '1gpq', '1jps', '1wej', '1l9b', '1s6v', '1w1i', '2a5t', '3fap']
 
-	dataset = Single_Dataset(list_npz)
-	train_data, test_data = random_split(dataset, [0.75, 0.25])
+	train_data_list = []
+	test_data_list = []
+	for file in list_npz:
+		if file[:4] in fold1_label or file[:4] in fold3_label or file[:4] in fold4_label:
+			train_data_list.append(file)
+		elif file[:4] in fold2_label:
+			test_data_list.append(file)
+
+	train_data = Single_Dataset(train_data_list)
+	test_data = Single_Dataset(test_data_list)
+	#train_data, test_data = random_split(dataset, [0.75, 0.25])
 
 	BATCH_SIZE = 10
 
@@ -98,11 +111,11 @@ def train_falcon_gnn(input_path, params):
 
 	model, device = init_model(params)
 
-	learning_rate = 1e-4
+	learning_rate = 5e-5
 	optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 	loss_fn = nn.BCELoss()
 
-	EPOCHS = 50  # number of training epoch
+	EPOCHS = 30  # number of training epoch
 
 	best_valid_loss = float('inf')
 
@@ -123,10 +136,11 @@ def train_falcon_gnn(input_path, params):
 		print(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_time}s')
 		print(f'\tTrain Loss: {train_loss:.3f}')
 		train_loss_list.append(train_loss)
-	  
-	torch.save(model.state_dict(), 'full_train_DG1_random_batch_orig_params.pt')  # saving model's parameters
-	pickle.dump(train_loss_list, open("full_train_DG1_random_batch_orig_params_loss.pickle"))
-	torch.save(test_loader, 'full_train_DG1_random_batch_orig_params_test_data.dl')
+	 
+	os.chdir('/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA')
+	torch.save(model.state_dict(), 'full_train_DG1_random_batch_jake_params_3.pt')  # saving model's parameters
+	pickle.dump(train_loss_list, open("full_train_DG1_random_batch_jake_params_3_loss.pickle", "wb"))
+	#torch.save(test_loader, 'full_train_DG1_random_batch_jake_params_2_test_data.dl')
 
 
 

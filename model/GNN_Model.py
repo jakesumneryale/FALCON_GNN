@@ -56,9 +56,15 @@ class GNN_Model(nn.Module):
         self.gconv1 = nn.ModuleList \
             ([GAT_gate(self.layers1[i], self.layers1[ i +1]) for i in range(len(self.layers1 ) -1)])
 
-        self.FC = nn.ModuleList([nn.Linear(self.layers1[-1], d_FC_layer) if i== 0 else
-                                 nn.Linear(d_FC_layer, 1) if i == n_FC_layer - 1 else
-                                 nn.Linear(d_FC_layer, d_FC_layer) for i in range(n_FC_layer)])
+        # self.FC = nn.ModuleList([nn.Linear(self.layers1[-1], d_FC_layer) if i== 0 else
+        #                          nn.Linear(d_FC_layer, 1) if i == n_FC_layer - 1 else
+        #                          nn.Linear(d_FC_layer, d_FC_layer) for i in range(n_FC_layer)])
+
+        self.FC = nn.ModuleList([nn.Linear(self.layers1[-1], 2048),
+                                 nn.Linear(2048, 512),
+                                 nn.Linear(512, 256),
+                                 nn.Linear(256, 1)
+                                 ])
 
         self.mu = nn.Parameter(torch.Tensor([params['initial_mu']]).float())
         self.dev = nn.Parameter(torch.Tensor([params['initial_dev']]).float())
@@ -69,13 +75,15 @@ class GNN_Model(nn.Module):
 
     def fully_connected(self, c_hs):
         regularization = torch.empty(len(self.FC) * 1 - 1, device=c_hs.device)
+        act_fn = nn.LeakyReLU(0.2)
 
         for k in range(len(self.FC)):
             # c_hs = self.FC[k](c_hs)
             if k < len(self.FC) - 1:
                 c_hs = self.FC[k](c_hs)
                 c_hs = F.dropout(c_hs, p=self.dropout_rate, training=self.training)
-                c_hs = F.relu(c_hs)
+                #c_hs = F.relu(c_hs)
+                c_hs = act_fn(c_hs)
             else:
                 c_hs = self.FC[k](c_hs)
 
@@ -120,6 +128,7 @@ class GNN_Model(nn.Module):
             num_atoms = int(atom_list[batch_idx])
             tmp_pred=c_hs[batch_idx,:num_atoms]
             tmp_pred=tmp_pred.sum(0)#sum all the used atoms
+            # tmp_pred=tmp_pred.mean(0) ## Average all the used atoms
             #if self.params['debug']:
             #    print("pred feature size",tmp_pred.size())
             prediction.append(tmp_pred)
