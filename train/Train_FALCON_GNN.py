@@ -88,9 +88,9 @@ def train_falcon_gnn(input_path, params):
 	train_data_list = []
 	test_data_list = []
 	for file in list_npz:
-		if file[:4] in fold1_label or file[:4] in fold3_label or file[:4] in fold4_label:
+		if file[:4] in fold1_label or file[:4] in fold2_label or file[:4] in fold4_label:
 			train_data_list.append(file)
-		elif file[:4] in fold2_label:
+		elif file[:4] in fold3_label:
 			test_data_list.append(file)
 
 	train_data = Single_Dataset(train_data_list)
@@ -138,9 +138,9 @@ def train_falcon_gnn(input_path, params):
 		train_loss_list.append(train_loss)
 	 
 	os.chdir('/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA')
-	torch.save(model.state_dict(), 'full_train_DG1_random_batch_jake_params_3.pt')  # saving model's parameters
-	pickle.dump(train_loss_list, open("full_train_DG1_random_batch_jake_params_3_loss.pickle", "wb"))
-	#torch.save(test_loader, 'full_train_DG1_random_batch_jake_params_2_test_data.dl')
+	torch.save(model.state_dict(), 'DG1_random_batch_jake_params_2_run_4.pt')  # saving model's parameters
+	pickle.dump(train_loss_list, open("DG1_random_batch_jake_params_2_run_4_loss.pickle", "wb"))
+	pickle.dump(test_data_list, open('DG1_random_batch_jake_params_2_run_4_test_data.pickle', "wb"))
 
 
 

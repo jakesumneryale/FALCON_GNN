@@ -127,8 +127,8 @@ class GNN_Model(nn.Module):
         for batch_idx in range(len(atom_list)):
             num_atoms = int(atom_list[batch_idx])
             tmp_pred=c_hs[batch_idx,:num_atoms]
-            tmp_pred=tmp_pred.sum(0)#sum all the used atoms
-            # tmp_pred=tmp_pred.mean(0) ## Average all the used atoms
+            # tmp_pred=tmp_pred.sum(0)#sum all the used atoms
+            tmp_pred=tmp_pred.mean(0) ## Average all the used atoms
             #if self.params['debug']:
             #    print("pred feature size",tmp_pred.size())
             prediction.append(tmp_pred)

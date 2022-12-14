@@ -25,6 +25,22 @@ def get_capri_rank(rmsds):
 
 pdb_only_list = ["2bnq", "2btf"]
 
+def get_capri_rank_2(pdb_name):
+    '''
+    Takes the RMSDs and determines whether the model is
+    acceptable or not according to CAPRI standards
+    '''
+    rank = int(pdb_name[7])
+    if rank > 3:
+        ## Unacceptable Capri Rank
+        capri_rank = 0 
+    else:
+        ## Accetable Capri Rank
+        capri_rank = 1
+    return capri_rank
+
+pdb_only_list = ["2bnq", "2btf"]
+
 def parse_through_all_files(dirloc, rmsd_dict):
     '''
     Parses through all files in the directories for the
@@ -60,6 +76,32 @@ def parse_through_all_files(dirloc, rmsd_dict):
                         print(f"FAILED ON MODEL {master_pdb_id} {decoy}")
     return npz_filelist
 
+def parse_through_all_files_2(dirloc):
+    '''
+    Parses through all files in the directories for the
+    decoy datasets
+    '''
+    npz_filelist = []
+    os.chdir(dirloc)
+    dirs = os.walk(dirloc)
+    for ele in dirs:
+        decoy_pdbs = sorted(ele[2])
+        temp_decoy_dict = {}
+
+        ## Gets the length of the rec subunits from the file name
+        rec_subunits = 1
+        for decoy in decoy_pdbs:
+            if decoy.endswith(".pdb"):
+                try:
+                    structure_path = os.path.join(ele[0], decoy)
+                    capri_rank = get_capri_rank_2(decoy)
+                    npz_filelist.append(Prepare_Input(structure_path, rec_subunits, capri_rank = capri_rank))
+                except:
+                    print(f"FAILED ON MODEL {decoy}")
+                 
+        
+    return npz_filelist
+
 '''
 Make sure to make this program so that it can create the entire dataset along with labels that it stores
 in the dataset - need to modify the collate_fn.py so that it can handle the label input as well.
@@ -68,14 +110,14 @@ label.
 '''
 
 def main():
-    decoy_path = r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/dockground_1_decoys"
+    decoy_path = r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/dockground_set_2"
     os.chdir(r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/")
-    rmsd_dict = pickle.load(open("dockground_decoys_rmsds.pickle", "rb"))
-    npz_filelist = parse_through_all_files(decoy_path, rmsd_dict)
+    #rmsd_dict = pickle.load(open("dockground_decoys_rmsds.pickle", "rb"))
+    npz_filelist = parse_through_all_files_2(decoy_path)
 
     ## Save the list to make a dataset out of later!
     os.chdir(decoy_path)
-    file_obj = open("dockground_1_npz_list.pickle", "wb")
+    file_obj = open("dockground_2_npz_list.pickle", "wb")
     pickle.dump(npz_filelist, file_obj)
     # dataset = Single_Dataset(npz_filelist)
     # dataloader = DataLoader(dataset, 1, shuffle=False,

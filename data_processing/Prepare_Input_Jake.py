@@ -61,10 +61,10 @@ def Prepare_Input(structure_path, receptor_units, capri_rank = None):
     ## Add logic to the input file so that each input file is named with the following method
     ## <target_ID_decoy_ID.npz>. Create a list of the file path locations
 
-    dataset_path = r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/dockground_1_processed_npz"
+    dataset_path = r"/mnt/c/Users/jaket/Documents/GNN_DOVE_DATA/dockground_set_2_npz"
     temp_struc = structure_path.split("/")
-    pdb_name, decoy_name =temp_struc[-3].split("_")[0], temp_struc[-1].split(".")[0]
-    temp_save_file = f"{pdb_name}_{decoy_name}.npz"
+    decoy_name = temp_struc[-1].split(".")[0]
+    temp_save_file = f"{decoy_name}.npz"
     input_file=os.path.join(dataset_path, temp_save_file)
     # sample = {
     #     'H': H.tolist(),
